@@ -1,103 +1,364 @@
 ---
-# You can also start simply with 'default'
 theme: seriph
-# random image from a curated Unsplash collection by Anthony
-# like them? see https://unsplash.com/collections/94734566/slidev
-background: https://cover.sli.dev
-# some information about your slides (markdown enabled)
-title: Welcome to Slidev
-info: |
-  ## Slidev Starter Template
-  Presentation slides for developers.
-
-  Learn more at [Sli.dev](https://sli.dev)
-# apply unocss classes to the current slide
+background: https://source.unsplash.com/collection/94734566/1920x1080
 class: text-center
-# https://sli.dev/features/drawing
+transition: slide-left
 drawings:
   persist: false
-# slide transition: https://sli.dev/guide/animations.html#slide-transitions
-transition: slide-left
-# enable MDC Syntax: https://sli.dev/features/mdc
 mdc: true
-# open graph
-seoMeta:
-  # By default, Slidev will use ./og-image.png if it exists,
-  # or generate one from the first slide if not found.
-  ogImage: auto
-  # ogImage: https://cover.sli.dev
 ---
 
-# Welcome to Slidev
+# Functional Programming with TypeScript
 
-Presentation slides for developers
-
-<div @click="$slidev.nav.next" class="mt-12 py-1" hover:bg="white op-10">
-  Press Space for next page <carbon:arrow-right />
-</div>
+From First Principles to Monads
 
 <div class="abs-br m-6 text-xl">
-  <button @click="$slidev.nav.openInEditor()" title="Open in Editor" class="slidev-icon-btn">
-    <carbon:edit />
-  </button>
-  <a href="https://github.com/slidevjs/slidev" target="_blank" class="slidev-icon-btn">
+  <a href="https://github.com/anuchito/course-functional-programming" target="_blank" class="slidev-icon-btn">
     <carbon:logo-github />
   </a>
 </div>
 
-<!--
-The last comment block of each slide will be treated as slide notes. It will be visible and editable in Presenter Mode along with the slide. [Read more in the docs](https://sli.dev/guide/syntax.html#notes)
--->
-
----
-transition: fade-out
 ---
 
-# What is Slidev?
+# Course Journey
 
-Slidev is a slides maker and presenter designed for developers, consist of the following features
+1. 🧱 Foundations
+   - Pure Functions & Immutability
+   - First-Class & Higher-Order Functions
+   - Function Composition
 
-- 📝 **Text-based** - focus on the content with Markdown, and then style them later
-- 🎨 **Themable** - themes can be shared and re-used as npm packages
-- 🧑‍💻 **Developer Friendly** - code highlighting, live coding with autocompletion
-- 🤹 **Interactive** - embed Vue components to enhance your expressions
-- 🎥 **Recording** - built-in recording and camera view
-- 📤 **Portable** - export to PDF, PPTX, PNGs, or even a hostable SPA
-- 🛠 **Hackable** - virtually anything that's possible on a webpage is possible in Slidev
-<br>
-<br>
+2. 🏗️ Building Blocks
+   - Functors
+   - Monads (Maybe, Either, IO)
+   - Applicatives
 
-Read more about [Why Slidev?](https://sli.dev/guide/why)
+3. 🚀 Advanced Patterns
+   - Monad Transformers
+   - Free Monads
+   - Practical Applications
 
-<!--
-You can have `style` tag in markdown to override the style for the current page.
-Learn more: https://sli.dev/features/slide-scope-style
--->
+---
 
-<style>
-h1 {
-  background-color: #2B90B6;
-  background-image: linear-gradient(45deg, #4EC5D4 10%, #146b8c 20%);
-  background-size: 100%;
-  -webkit-background-clip: text;
-  -moz-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  -moz-text-fill-color: transparent;
+# What is Functional Programming?
+
+A paradigm where programs are built by composing pure functions, avoiding shared state, and side effects
+
+```typescript
+// TypeScript with Functional Approach
+type User = { id: number; name: string; email?: string };
+
+declare const users: User[];
+
+// Imperative (how to do it)
+let activeUsers: User[] = [];
+for (const user of users) {
+  if (user.email) {
+    activeUsers.push(user);
+  }
 }
-</style>
 
-<!--
-Here is another comment.
--->
+// Functional (what to do)
+const activeUsers = users.filter(user => user.email !== undefined);
+```
 
 ---
-transition: slide-up
-level: 2
+
+# Core Principles in TypeScript
+
+```typescript
+// 1. Pure Functions
+type Add = (a: number, b: number) => number;
+const add: Add = (a, b) => a + b;  // Pure
+
+// 2. Immutability
+const numbers = [1, 2, 3];
+const newNumbers = [...numbers, 4]; // New array
+
+// 3. First-Class Functions
+const operations = {
+  add: (a: number, b: number) => a + b,
+  multiply: (a: number, b: number) => a * b
+};
+
+// 4. Higher-Order Functions
+const withLogging = <T>(fn: (...args: any[]) => T) =>
+  (...args: any[]): T => {
+    console.log('Calling with args:', args);
+    return fn(...args);
+  };
+```
+
 ---
 
-# Navigation
+# Pure Functions in TypeScript
 
-Hover on the bottom-left corner to see the navigation's controls panel, [learn more](https://sli.dev/guide/ui#navigation-bar)
+### Characteristics
+```typescript
+// Pure Function Example
+type User = { id: number; name: string };
+
+// Pure: Same input → Same output, no side effects
+const formatName = (user: User): string =>
+  `${user.name} (${user.id})`;
+
+// Impure: Has side effect (console.log)
+const logUser = (user: User): void => {
+  console.log(`User: ${user.name}`);
+};
+
+// Impure: Relies on external state
+let counter = 0;
+const increment = (): number => ++counter;
+```
+
+### Benefits
+- 🔍 Predictable
+- 🧪 Testable
+- ♻️ Cacheable
+- 🧵 Thread-safe
+
+---
+
+# Immutability in TypeScript
+
+### Techniques
+```typescript
+// 1. Readonly Types
+type ImmutableUser = Readonly<{
+  id: number;
+  name: string;
+  tags: ReadonlyArray<string>;
+}>;
+
+// 2. Deep Immutability
+type DeepReadonly<T> = {
+  readonly [P in keyof T]: T[P] extends object
+    ? DeepReadonly<T[P]>
+    : T[P];
+};
+
+// 3. Immutable Updates
+const addItem = <T>(array: T[], item: T): T[] => [...array, item];
+const removeItem = <T>(array: T[], index: number): T[] =>
+  [...array.slice(0, index), ...array.slice(index + 1)];
+```
+
+### Libraries
+- Immer
+- Immutable.js
+- TypeScript's `readonly`
+
+---
+
+# Function Composition in TypeScript
+
+### Basic Composition
+```typescript
+const compose = <A, B, C>(f: (b: B) => C, g: (a: A) => B): (a: A) => C =>
+  (x: A) => f(g(x));
+
+// With multiple functions
+const pipe = <T>(...fns: Array<(arg: T) => T>) =>
+  (x: T) => fns.reduce((acc, fn) => fn(acc), x);
+```
+
+### Practical Example
+```typescript
+// Type-safe function chaining
+type User = { id: number; name: string; email: string | null };
+
+declare const getUser: (id: number) => User | null;
+declare const sendEmail: (email: string) => void;
+
+const notifyUser = (userId: number) => {
+  const user = getUser(userId);
+  if (user?.email) {
+    sendEmail(user.email);
+  }
+};
+
+// With function composition
+const safeGetEmail = (user: User | null): string | null =>
+  user?.email ?? null;
+
+const notifyUser2 = pipe(
+  getUser,
+  safeGetEmail,
+  email => email ? sendEmail(email) : null
+);
+```
+
+---
+
+# Higher-Order Functions & Functors
+
+### Type-Safe Array Operations
+```typescript
+type User = { id: number; name: string; active: boolean };
+
+const users: User[] = [
+  { id: 1, name: 'Alice', active: true },
+  { id: 2, name: 'Bob', active: false },
+  { id: 3, name: 'Charlie', active: true }
+];
+
+// Map: User[] → string[]
+const names = users.map(user => user.name);
+
+// Filter: (User → boolean) → User[]
+const activeUsers = users.filter(user => user.active);
+
+// Reduce: (A, User) → A, A → A
+const userIds = users.reduce<number[]>((acc, user) =>
+  [...acc, user.id], []);
+```
+
+### Custom Functor
+```typescript
+class Box<T> {
+  constructor(private value: T) {}
+
+  map<U>(fn: (value: T) => U): Box<U> {
+    return new Box(fn(this.value));
+  }
+
+  getValue(): T {
+    return this.value;
+  }
+}
+
+// Usage
+const result = new Box('hello')
+  .map(s => s.toUpperCase())
+  .map(s => s.split('').join('-'))
+  .getValue(); // "H-E-L-L-O"
+
+---
+
+# Monads in TypeScript
+
+### The Maybe Monad
+```typescript
+class Maybe<T> {
+  private constructor(private value: T | null) {}
+
+  static of<T>(value: T | null): Maybe<T> {
+    return new Maybe(value);
+  }
+
+  map<U>(fn: (value: T) => U): Maybe<U | null> {
+    return this.value === null 
+      ? Maybe.of<U>(null) 
+      : Maybe.of(fn(this.value));
+  }
+
+  chain<U>(fn: (value: T) => Maybe<U>): Maybe<U> {
+    return this.value === null 
+      ? Maybe.of<U>(null)
+      : fn(this.value);
+  }
+
+  getOrElse<U>(defaultValue: U): T | U {
+    return this.value === null ? defaultValue : this.value;
+  }
+}
+
+// Usage
+const getUser = (id: number): Maybe<{ name: string }> => 
+  id === 1 ? Maybe.of({ name: 'Alice' }) : Maybe.of(null);
+
+const result = getUser(1)
+  .map(user => user.name.toUpperCase())
+  .getOrElse('User not found');
+```
+
+---
+
+# Practical Monads in TypeScript
+
+### The Either Monad for Error Handling
+```typescript
+type Left<L> = { kind: 'left'; value: L };
+type Right<R> = { kind: 'right'; value: R };
+type Either<L, R> = Left<L> | Right<R>;
+
+const left = <L, R>(value: L): Either<L, R> => 
+  ({ kind: 'left', value });
+
+const right = <L, R>(value: R): Either<L, R> => 
+  ({ kind: 'right', value });
+
+const map = <L, R, B>(either: Either<L, R>, fn: (r: R) => B): Either<L, B> => 
+  either.kind === 'right' ? right(fn(either.value)) : either;
+
+// Usage
+type User = { id: number; name: string };
+
+declare function fetchUser(id: number): Either<string, User>;
+
+const result = map(
+  fetchUser(1),
+  user => `User: ${user.name}`
+);
+```
+
+### The IO Monad for Side Effects
+```typescript
+class IO<T> {
+  constructor(private effect: () => T) {}
+
+  static of<T>(value: T): IO<T> {
+    return new IO(() => value);
+  }
+
+  map<U>(fn: (value: T) => U): IO<U> {
+    return new IO(() => fn(this.effect()));
+  }
+
+  chain<U>(fn: (value: T) => IO<U>): IO<U> {
+    return fn(this.effect());
+  }
+
+  run(): T {
+    return this.effect();
+  }
+}
+
+// Usage
+const getEnv = (key: string): IO<string | undefined> => 
+  new IO(() => process.env[key]);
+
+const program = getEnv('HOME').map(home => 
+  `Your home directory is ${home}`
+);
+
+console.log(program.run());
+
+---
+
+# Next Steps & Resources
+
+### Practice Exercises
+1. Implement `map`, `filter`, `reduce` for linked lists
+2. Create a `Task` monad for async operations
+3. Build a simple state management system using `Reader` monad
+
+### Recommended Libraries
+- `fp-ts` - TypeScript functional programming library
+- `io-ts` - Runtime type validation
+- `monet.js` - Monadic types for JavaScript
+- `ramda` - Practical functional utilities
+
+### Learning Resources
+- [Mostly Adequate Guide](https://mostly-adequate.gitbook.io/mostly-adequate-guide/)
+- [Functional Programming in TypeScript](https://gcanti.github.io/fp-ts/)
+- [Fantasy Land Specification](https://github.com/fantasyland/fantasy-land)
+- [Professor Frisby's Mostly Adequate Guide](https://github.com/MostlyAdequate/mostly-adequate-guide)
+
+### Join the Community
+- FP Discord channels
+- Local meetups and conferences
+- Open source contributions
 
 ## Keyboard Shortcuts
 
