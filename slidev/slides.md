@@ -247,13 +247,13 @@ class Maybe<T> {
   }
 
   map<U>(fn: (value: T) => U): Maybe<U | null> {
-    return this.value === null 
-      ? Maybe.of<U>(null) 
+    return this.value === null
+      ? Maybe.of<U>(null)
       : Maybe.of(fn(this.value));
   }
 
   chain<U>(fn: (value: T) => Maybe<U>): Maybe<U> {
-    return this.value === null 
+    return this.value === null
       ? Maybe.of<U>(null)
       : fn(this.value);
   }
@@ -264,7 +264,7 @@ class Maybe<T> {
 }
 
 // Usage
-const getUser = (id: number): Maybe<{ name: string }> => 
+const getUser = (id: number): Maybe<{ name: string }> =>
   id === 1 ? Maybe.of({ name: 'Alice' }) : Maybe.of(null);
 
 const result = getUser(1)
@@ -282,13 +282,13 @@ type Left<L> = { kind: 'left'; value: L };
 type Right<R> = { kind: 'right'; value: R };
 type Either<L, R> = Left<L> | Right<R>;
 
-const left = <L, R>(value: L): Either<L, R> => 
+const left = <L, R>(value: L): Either<L, R> =>
   ({ kind: 'left', value });
 
-const right = <L, R>(value: R): Either<L, R> => 
+const right = <L, R>(value: R): Either<L, R> =>
   ({ kind: 'right', value });
 
-const map = <L, R, B>(either: Either<L, R>, fn: (r: R) => B): Either<L, B> => 
+const map = <L, R, B>(either: Either<L, R>, fn: (r: R) => B): Either<L, B> =>
   either.kind === 'right' ? right(fn(either.value)) : either;
 
 // Usage
@@ -325,10 +325,10 @@ class IO<T> {
 }
 
 // Usage
-const getEnv = (key: string): IO<string | undefined> => 
+const getEnv = (key: string): IO<string | undefined> =>
   new IO(() => process.env[key]);
 
-const program = getEnv('HOME').map(home => 
+const program = getEnv('HOME').map(home =>
   `Your home directory is ${home}`
 );
 
